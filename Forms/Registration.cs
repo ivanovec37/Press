@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.Remoting.Contexts;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -12,52 +14,97 @@ namespace Press.Forms
 {
     public partial class Registration : Form
     {
-        private User newUser;
-        public User NewUser
-        {
-            get
-            {
-                return newUser;
-            }
-        }
+        SqlConnection connection = new SqlConnection(@"Data Source=MSI\SQLEXPRESS;Initial Catalog=Press;Integrated Security=true;");
+        SqlDataAdapter adapter;
+        SqlCommand command;
+        DataSet ds = new DataSet();
+
         public Registration()
         {
             InitializeComponent();
+
         }
 
         private void AuthorizationButton_Click(object sender, EventArgs e)
         {
-            Controller controller = new Controller();
-            var res = controller.Authorization(Login_TextBox1.Text, Password_TextBox1.Text);
-            if (res == null)
+            if (Login_TextBox1.Text.Length > Parameters.MAX_LOGIN_LENGTH)
             {
-                Form1 form1 = new Form1(controller);
+                MessageBox.Show($"Логин должен быть короче {Parameters.MAX_LOGIN_LENGTH} символов ");
+                return;
+            }
+            if (Password_TextBox1.Text.Length > Parameters.MAX_PASSWORD_LENGTH)
+            {
+                MessageBox.Show($"Пароль должен быть короче {Parameters.MAX_PASSWORD_LENGTH} символов ");
+                return;
+            }
+            if (Login_TextBox1.Text.Length == 0 || Password_TextBox1.Text.Length == 0)
+            {
+                MessageBox.Show($"Введите логин и пароль!");
+                return;
+            }
 
-                form1.Show();
-                this.Visible = false;
-            }
-            else
+            adapter = new SqlDataAdapter($"select Users.ID from Users" +
+                $" where Users.Login = '{Login_TextBox1.Text}' and Users.Password ='{Password_TextBox1.Text}'; ", connection);
+            SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
+            adapter.Fill(ds);
+            if(ds.Tables[0].Rows.Count == 0)
             {
-                MessageBox.Show(res);
+                MessageBox.Show("Нет такого пользователя");
+                return;
             }
+
+            Form1 form1 = new Form1();
+
+            form1.Show();
+            this.Visible = false;
+
         }
 
         private void Registration_Button_Click(object sender, EventArgs e)
         {
-            Controller controller = new Controller();
-            var res = controller.Registration(LoginTextBox2.Text, PasswordTextBox2.Text);
-            if (res == null)
+            if (Login_TextBox2.Text.Length > Parameters.MAX_LOGIN_LENGTH)
             {
-                Form1 form1 = new Form1(controller);
-
-                form1.Show();
-
-                this.Visible = false;
+                MessageBox.Show($"Логин должен быть короче {Parameters.MAX_LOGIN_LENGTH} символов ");
+                return;
             }
-            else
+            if (Password_TextBox2.Text.Length > Parameters.MAX_PASSWORD_LENGTH)
             {
-                MessageBox.Show(res);
+                MessageBox.Show($"Пароль должен быть короче {Parameters.MAX_PASSWORD_LENGTH} символов ");
+                return;
             }
+            if (Login_TextBox2.Text.Length == 0 || Password_TextBox2.Text.Length == 0)
+            {
+                MessageBox.Show($"Введите логин и пароль!");
+                return;
+            }
+            adapter = new SqlDataAdapter($"select Users.ID from Users" +
+               $" where Users.Login = '{Login_TextBox2.Text}' ; ", connection);
+            SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
+            adapter.Fill(ds);
+
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                MessageBox.Show("Пользователь с таким логином уже существует");
+                return;
+            }
+            //Я НАШКОДИЛ
+            connection.Open();
+            command = new SqlCommand( $"insert into Users values (\'{Login_TextBox2.Text}\',\'{Password_TextBox2.Text}\');", connection);
+            int number = command.ExecuteNonQuery();
+            connection.Close();
+            if (number == 0)
+            {
+                MessageBox.Show("Неудачная попытка входа");
+                return;
+            }
+
+            //adapter.UpdateCommand = command;
+            //adapter.Update(ds);
+
+            Form1 form1 = new Form1();
+            form1.Show();
+            this.Visible = false;
+
         }
     }
 }
