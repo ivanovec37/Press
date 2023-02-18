@@ -87,7 +87,6 @@ namespace Press.Forms
                 MessageBox.Show("Пользователь с таким логином уже существует");
                 return;
             }
-            //Я НАШКОДИЛ
             connection.Open();
             command = new SqlCommand( $"insert into Users values (\'{Login_TextBox2.Text}\',\'{Password_TextBox2.Text}\');", connection);
             int number = command.ExecuteNonQuery();
@@ -97,9 +96,6 @@ namespace Press.Forms
                 MessageBox.Show("Неудачная попытка входа");
                 return;
             }
-
-            //adapter.UpdateCommand = command;
-            //adapter.Update(ds);
 
             Form1 form1 = new Form1();
             form1.Show();

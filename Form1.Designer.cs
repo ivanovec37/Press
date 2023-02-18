@@ -30,12 +30,13 @@
         {
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.Name_PUBL_ComboBox = new System.Windows.Forms.ComboBox();
             this.Save_Button = new System.Windows.Forms.Button();
             this.Add_Button = new System.Windows.Forms.Button();
             this.label8 = new System.Windows.Forms.Label();
             this.Sale_DateTimePicker1 = new System.Windows.Forms.DateTimePicker();
             this.label7 = new System.Windows.Forms.Label();
-            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
+            this.Circulation_NumericUpDown = new System.Windows.Forms.NumericUpDown();
             this.label6 = new System.Windows.Forms.Label();
             this.Price_NumericUpDown = new System.Windows.Forms.NumericUpDown();
             this.label5 = new System.Windows.Forms.Label();
@@ -45,17 +46,17 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.Publish_Name_TextBox = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.Product_Name_TextBox = new System.Windows.Forms.TextBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.Print_Select_Button = new System.Windows.Forms.Button();
             this.dataGridView2 = new System.Windows.Forms.DataGridView();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.label9 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Circulation_NumericUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Price_NumericUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Demand_NumericUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -75,12 +76,13 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.Name_PUBL_ComboBox);
             this.tabPage1.Controls.Add(this.Save_Button);
             this.tabPage1.Controls.Add(this.Add_Button);
             this.tabPage1.Controls.Add(this.label8);
             this.tabPage1.Controls.Add(this.Sale_DateTimePicker1);
             this.tabPage1.Controls.Add(this.label7);
-            this.tabPage1.Controls.Add(this.numericUpDown1);
+            this.tabPage1.Controls.Add(this.Circulation_NumericUpDown);
             this.tabPage1.Controls.Add(this.label6);
             this.tabPage1.Controls.Add(this.Price_NumericUpDown);
             this.tabPage1.Controls.Add(this.label5);
@@ -90,7 +92,6 @@
             this.tabPage1.Controls.Add(this.label4);
             this.tabPage1.Controls.Add(this.label3);
             this.tabPage1.Controls.Add(this.label2);
-            this.tabPage1.Controls.Add(this.Publish_Name_TextBox);
             this.tabPage1.Controls.Add(this.label1);
             this.tabPage1.Controls.Add(this.Product_Name_TextBox);
             this.tabPage1.Controls.Add(this.dataGridView1);
@@ -101,6 +102,15 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Основная таблица";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // Name_PUBL_ComboBox
+            // 
+            this.Name_PUBL_ComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.Name_PUBL_ComboBox.FormattingEnabled = true;
+            this.Name_PUBL_ComboBox.Location = new System.Drawing.Point(199, 337);
+            this.Name_PUBL_ComboBox.Name = "Name_PUBL_ComboBox";
+            this.Name_PUBL_ComboBox.Size = new System.Drawing.Size(150, 24);
+            this.Name_PUBL_ComboBox.TabIndex = 21;
             // 
             // Save_Button
             // 
@@ -120,6 +130,7 @@
             this.Add_Button.TabIndex = 19;
             this.Add_Button.Text = "Добавить ";
             this.Add_Button.UseVisualStyleBackColor = true;
+            this.Add_Button.Click += new System.EventHandler(this.Add_Button_Click);
             // 
             // label8
             // 
@@ -133,6 +144,7 @@
             // 
             // Sale_DateTimePicker1
             // 
+            this.Sale_DateTimePicker1.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
             this.Sale_DateTimePicker1.Location = new System.Drawing.Point(537, 411);
             this.Sale_DateTimePicker1.Name = "Sale_DateTimePicker1";
             this.Sale_DateTimePicker1.Size = new System.Drawing.Size(156, 22);
@@ -148,17 +160,17 @@
             this.label7.Text = "Тираж";
             this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // numericUpDown1
+            // Circulation_NumericUpDown
             // 
-            this.numericUpDown1.Location = new System.Drawing.Point(30, 411);
-            this.numericUpDown1.Maximum = new decimal(new int[] {
+            this.Circulation_NumericUpDown.Location = new System.Drawing.Point(30, 411);
+            this.Circulation_NumericUpDown.Maximum = new decimal(new int[] {
             1410065408,
             2,
             0,
             0});
-            this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(150, 22);
-            this.numericUpDown1.TabIndex = 15;
+            this.Circulation_NumericUpDown.Name = "Circulation_NumericUpDown";
+            this.Circulation_NumericUpDown.Size = new System.Drawing.Size(150, 22);
+            this.Circulation_NumericUpDown.TabIndex = 15;
             // 
             // label6
             // 
@@ -253,14 +265,6 @@
             this.label2.Text = "Издательство";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // Publish_Name_TextBox
-            // 
-            this.Publish_Name_TextBox.Location = new System.Drawing.Point(201, 335);
-            this.Publish_Name_TextBox.Multiline = true;
-            this.Publish_Name_TextBox.Name = "Publish_Name_TextBox";
-            this.Publish_Name_TextBox.Size = new System.Drawing.Size(148, 20);
-            this.Publish_Name_TextBox.TabIndex = 3;
-            // 
             // label1
             // 
             this.label1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
@@ -273,10 +277,10 @@
             // 
             // Product_Name_TextBox
             // 
-            this.Product_Name_TextBox.Location = new System.Drawing.Point(32, 335);
+            this.Product_Name_TextBox.Location = new System.Drawing.Point(30, 335);
             this.Product_Name_TextBox.Multiline = true;
             this.Product_Name_TextBox.Name = "Product_Name_TextBox";
-            this.Product_Name_TextBox.Size = new System.Drawing.Size(148, 20);
+            this.Product_Name_TextBox.Size = new System.Drawing.Size(150, 20);
             this.Product_Name_TextBox.TabIndex = 1;
             // 
             // dataGridView1
@@ -289,6 +293,7 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.Print_Select_Button);
             this.tabPage2.Controls.Add(this.dataGridView2);
             this.tabPage2.Controls.Add(this.comboBox1);
             this.tabPage2.Controls.Add(this.label9);
@@ -300,12 +305,25 @@
             this.tabPage2.Text = "Запросы";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
+            // Print_Select_Button
+            // 
+            this.Print_Select_Button.BackColor = System.Drawing.Color.ForestGreen;
+            this.Print_Select_Button.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.Print_Select_Button.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.Print_Select_Button.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.Print_Select_Button.Location = new System.Drawing.Point(960, 11);
+            this.Print_Select_Button.Name = "Print_Select_Button";
+            this.Print_Select_Button.Size = new System.Drawing.Size(223, 23);
+            this.Print_Select_Button.TabIndex = 3;
+            this.Print_Select_Button.Text = "Вывести запрос";
+            this.Print_Select_Button.UseVisualStyleBackColor = false;
+            // 
             // dataGridView2
             // 
             this.dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView2.Location = new System.Drawing.Point(19, 41);
+            this.dataGridView2.Location = new System.Drawing.Point(6, 203);
             this.dataGridView2.Name = "dataGridView2";
-            this.dataGridView2.Size = new System.Drawing.Size(1164, 457);
+            this.dataGridView2.Size = new System.Drawing.Size(929, 295);
             this.dataGridView2.TabIndex = 2;
             // 
             // comboBox1
@@ -337,7 +355,7 @@
             "Найти всю прессу чья стоимость выше чем средняя стоимость заданного издатeльства",
             "Найти прессу,которую чаще всего покупают,указать параметры(Стоимость,Издательство" +
                 ")"});
-            this.comboBox1.Location = new System.Drawing.Point(19, 11);
+            this.comboBox1.Location = new System.Drawing.Point(20, 10);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(742, 24);
             this.comboBox1.TabIndex = 1;
@@ -367,7 +385,7 @@
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Circulation_NumericUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Price_NumericUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Demand_NumericUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
@@ -390,11 +408,10 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox Publish_Name_TextBox;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox Product_Name_TextBox;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.NumericUpDown numericUpDown1;
+        private System.Windows.Forms.NumericUpDown Circulation_NumericUpDown;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.NumericUpDown Price_NumericUpDown;
         private System.Windows.Forms.Button Save_Button;
@@ -404,6 +421,8 @@
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.DataGridView dataGridView2;
+        private System.Windows.Forms.ComboBox Name_PUBL_ComboBox;
+        private System.Windows.Forms.Button Print_Select_Button;
     }
 }
 
