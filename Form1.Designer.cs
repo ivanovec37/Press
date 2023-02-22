@@ -53,7 +53,6 @@
             this.Print_Select_Button = new System.Windows.Forms.Button();
             this.dataGridView2 = new System.Windows.Forms.DataGridView();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.label9 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Circulation_NumericUpDown)).BeginInit();
@@ -296,7 +295,6 @@
             this.tabPage2.Controls.Add(this.Print_Select_Button);
             this.tabPage2.Controls.Add(this.dataGridView2);
             this.tabPage2.Controls.Add(this.comboBox1);
-            this.tabPage2.Controls.Add(this.label9);
             this.tabPage2.Location = new System.Drawing.Point(4, 25);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
@@ -311,64 +309,31 @@
             this.Print_Select_Button.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.Print_Select_Button.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.Print_Select_Button.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.Print_Select_Button.Location = new System.Drawing.Point(960, 11);
+            this.Print_Select_Button.Location = new System.Drawing.Point(783, 11);
             this.Print_Select_Button.Name = "Print_Select_Button";
             this.Print_Select_Button.Size = new System.Drawing.Size(223, 23);
             this.Print_Select_Button.TabIndex = 3;
             this.Print_Select_Button.Text = "Вывести запрос";
             this.Print_Select_Button.UseVisualStyleBackColor = false;
+            this.Print_Select_Button.Click += new System.EventHandler(this.Print_Select_Button_Click);
             // 
             // dataGridView2
             // 
             this.dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView2.Location = new System.Drawing.Point(6, 203);
+            this.dataGridView2.Location = new System.Drawing.Point(6, 87);
             this.dataGridView2.Name = "dataGridView2";
-            this.dataGridView2.Size = new System.Drawing.Size(929, 295);
+            this.dataGridView2.Size = new System.Drawing.Size(943, 411);
             this.dataGridView2.TabIndex = 2;
             // 
             // comboBox1
             // 
             this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Items.AddRange(new object[] {
-            "Вывести всю таблицу",
-            "В алфавитном порядке",
-            "По тиражу",
-            "По стоимости",
-            "Самое дорогое издание",
-            "Самоe дорогое издание для каждого вида прессы",
-            "Самое дешевое издание",
-            "Средняя стоимость  Журналов",
-            "Средняя стоимость  Книг",
-            "Средняя стоимость Газет",
-            "Средняя стоимость Словарей",
-            "Средняя стоимость Буклетов",
-            "Средняя стоимость",
-            "Найти пресу с ценой выше 5 рублей",
-            "Найти все издания,чей тираж попадает в заданые пределы",
-            " Для каждого издательства(Выбор пользователя) найти все виды газетной продукции",
-            "Найти Долю прессы проданный за определенный период ",
-            "Найти прессу меньше задданой Пользователем",
-            "Найти среднюю стоимость прессы проданной  за определённый промежуток времени(ввод" +
-                " интервала)",
-            "Найти прессу,чья стоимость > задданной и от заданного издательства",
-            "Найти всю прессу чья стоимость выше чем средняя стоимость заданного издатeльства",
-            "Найти прессу,которую чаще всего покупают,указать параметры(Стоимость,Издательство" +
-                ")"});
-            this.comboBox1.Location = new System.Drawing.Point(20, 10);
+            this.comboBox1.Location = new System.Drawing.Point(6, 10);
             this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(742, 24);
+            this.comboBox1.Size = new System.Drawing.Size(756, 24);
             this.comboBox1.TabIndex = 1;
-            // 
-            // label9
-            // 
-            this.label9.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label9.Location = new System.Drawing.Point(767, 11);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(181, 24);
-            this.label9.TabIndex = 0;
-            this.label9.Text = "Выберите запрос";
-            this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
             // Form1
             // 
@@ -419,7 +384,6 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.DateTimePicker Sale_DateTimePicker1;
         private System.Windows.Forms.ComboBox comboBox1;
-        private System.Windows.Forms.Label label9;
         private System.Windows.Forms.DataGridView dataGridView2;
         private System.Windows.Forms.ComboBox Name_PUBL_ComboBox;
         private System.Windows.Forms.Button Print_Select_Button;

@@ -16,18 +16,21 @@ namespace Press
 {
     public partial class Form1 : Form
     {
-        SqlConnection connection = new SqlConnection(@"Data Source=MSI\SQLEXPRESS;Initial Catalog = Press;Integrated Security = true;");
+        SqlConnection connection = new SqlConnection(@"Data Source = MSI\SQLEXPRESS;Initial Catalog = Press;Integrated Security = true;");
         SqlDataAdapter adapter;
         SqlCommand command;
         DataSet ds = new DataSet();
         Dictionary<string, int> Name_PUBL = new Dictionary<string, int>();
         Dictionary<string, int> Type_Press = new Dictionary<string, int>();
         Dictionary<string, int> Country = new Dictionary<string, int>();
-        Dictionary<int, List<Control>> selectControls = new Dictionary<int, List<Control>>();
+        Dictionary<string, Dictionary<string, Control>> selectControls = new Dictionary<string, Dictionary<string, Control>>();
+        List<string> queryNames = new List<string>();
+
         public Form1()
         {
             InitializeComponent();
             FillComboBoxes();
+            FillQueryNames();
             FillControls();
             comboBox1.SelectedIndex = 0;
             Name_PUBL_ComboBox.SelectedIndex = 0;
@@ -41,6 +44,31 @@ namespace Press
             };
             ShowTable();
         }
+        private void FillQueryNames()
+        {
+            queryNames.Add("Вывести список прессы отсортированный по наименованию");//Готово 0
+            queryNames.Add("Вывести список прессы отсортированный по тиражу");//готово 1
+            queryNames.Add("Вывести список прессы отсортированный по стоимости");//готово 2
+            queryNames.Add("Вывести самое дорогое, дешевое, срендняя стоимость для каждого вида прессы");//готово 3
+            queryNames.Add("Вывести прессу с ценой выше заданной");//готово 4
+            queryNames.Add("Вывести все издания, чей тираж находится в заданных пределах");//готово 5
+            queryNames.Add("Вывести все виды газетной продукции для заданного издательства");//готово 6 
+            queryNames.Add("Вывести все издания, чья стоимость находится в заданных пределах");//
+            queryNames.Add("Вывести долю прессы от общего числа изданий");//
+            queryNames.Add("Вывести долю прессы проданной за определённый период");//готово 9
+            queryNames.Add("Вывести все виды прессы со стоимостью больше заданной");//готово 10
+            queryNames.Add("Вывести всю прессу, чья стоимость выше средней стоимости по стране");//готово11
+            queryNames.Add("Вывести долю дешевой прессы, поступившей от заданного издательства");//       12
+            queryNames.Add("Вывести среднюю стоимость прессы, проданной за определённый промежуток времени");// готово 13
+            queryNames.Add("Вывести всю прессу, чья стоимость выше средней стоимости прессы заданного издательства");//готово 14
+            queryNames.Add("Вывести прессу которую чаще всего покупают");//готово 15
+            foreach (string name in queryNames)
+            {
+                comboBox1.Items.Add(name);
+            }
+        }
+
+
         private void FillComboBoxes()
         {
             DataSet dataSet = new DataSet();
@@ -95,7 +123,7 @@ namespace Press
                2 комбобокс - тип прессы ГОТОВО
                3 комбобокс - тип прессы ГОТОВО
                4 комбобокс - тип прессы ГОТОВО
-               5 нумерик - цена комбобоксc
+               5 нумерик - цена комбобоксc с издательством
                6  два нумерика для ввода интервала тиража
                7 комбобокс с издатель
                8 два нумерика для интервала стоимости + комбобокс для издательства
@@ -109,7 +137,7 @@ namespace Press
               16 нумерик цена комбобокс издательство
              */
 
-            #region selectControls[1] = new List<Control>();
+            selectControls[queryNames[0]] = new Dictionary<string, Control>();
             ComboBox comboBox = new ComboBox();
             comboBox.Visible = false;
             foreach (var name in Type_Press.Keys)
@@ -121,7 +149,7 @@ namespace Press
             comboBox.FormattingEnabled = true;
             comboBox.Location = new System.Drawing.Point(20, 64);
             comboBox.DropDownStyle = ComboBoxStyle.DropDownList;
-            selectControls[1].Add(comboBox);
+            selectControls[queryNames[0]]["comboBox1"] = comboBox;
 
             Label label = new Label();
             label.Visible = false;
@@ -129,38 +157,37 @@ namespace Press
             label.Location = new System.Drawing.Point(20, 44);
             label.Text = "Тип прессы";
             label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            selectControls[1].Add(label);
+            selectControls[queryNames[0]]["label1"] = label;
 
-            selectControls[2] = new List<Control>();
-            selectControls[2].Add(comboBox);
-            selectControls[2].Add(label);
+            selectControls[queryNames[1]] = new Dictionary<string, Control>();
+            selectControls[queryNames[1]]["comboBox1"] = comboBox;
+            selectControls[queryNames[1]]["label1"] = label;
 
-            selectControls[3] = new List<Control>();
-            selectControls[3].Add(comboBox);
-            selectControls[3].Add(label);
+            selectControls[queryNames[2]] = new Dictionary<string, Control>();
+            selectControls[queryNames[2]]["comboBox1"] = comboBox;
+            selectControls[queryNames[2]]["label1"] = label;
 
-            selectControls[4] = new List<Control>();
-            selectControls[4].Add(comboBox);
-            selectControls[4].Add(label);
+            selectControls[queryNames[3]] = new Dictionary<string, Control>();
+            selectControls[queryNames[3]]["comboBox1"] = comboBox;
+            selectControls[queryNames[3]]["label1"] = label;
             // 5 нумерик - цена комбобокс
-            selectControls[5] = new List<Control>();
+            selectControls[queryNames[4]] = new Dictionary<string, Control>();
             NumericUpDown numericUpDown = new NumericUpDown();
             numericUpDown.Visible = false;
             this.tabPage2.Controls.Add(numericUpDown);
             numericUpDown.DecimalPlaces = 2;
             numericUpDown.Location = new System.Drawing.Point(20, 64);
             numericUpDown.Maximum = new decimal(new int[] { 410065408, 2, 0, 0 });
-            selectControls[5].Add(numericUpDown);
+            selectControls[queryNames[4]]["numericUpDown1"] = numericUpDown;
 
             label = new Label();
             label.Visible = false;
             this.tabPage2.Controls.Add(label);
-            label.Location = new System.Drawing.Point(50, 44);
+            label.Location = new System.Drawing.Point(20, 44);
             label.Text = "Цена";
             label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            selectControls[5].Add(label);
+            selectControls[queryNames[4]]["labal1"] = label;
 
-            selectControls[5] = new List<Control>();
             comboBox = new ComboBox();
             comboBox.Visible = false;
             foreach (var name in Name_PUBL.Keys)
@@ -170,49 +197,47 @@ namespace Press
             comboBox.SelectedIndex = 0;
             this.tabPage2.Controls.Add(comboBox);
             comboBox.FormattingEnabled = true;
-            comboBox.Location = new System.Drawing.Point(40, 64);
+            comboBox.Location = new System.Drawing.Point(160, 64);
             comboBox.DropDownStyle = ComboBoxStyle.DropDownList;
-            selectControls[5].Add(comboBox);
+            selectControls[queryNames[4]]["comboBox1"] = comboBox;
 
             label.Visible = false;
             this.tabPage2.Controls.Add(label);
-            label.Location = new System.Drawing.Point(40, 44);
+            label.Location = new System.Drawing.Point(160, 44);
             label.AutoSize = true;
             label.Text = "Издательство";
             label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            selectControls[5].Add(label);
+            selectControls[queryNames[4]]["labal2"] = label;
 
             //6 два нумерика для ввода интервала тиража
 
-            selectControls[6] = new List<Control>();
+            selectControls[queryNames[5]] = new Dictionary<string, Control>();
             numericUpDown = new NumericUpDown();
             numericUpDown.Visible = false;
             this.tabPage2.Controls.Add(numericUpDown);
             numericUpDown.DecimalPlaces = 2;
-            numericUpDown.Location = new System.Drawing.Point(40, 64);
+            numericUpDown.Location = new System.Drawing.Point(20, 64);
             numericUpDown.Maximum = new decimal(new int[] { 410065408, 2, 0, 0 });
-            selectControls[6].Add(numericUpDown);
+            selectControls[queryNames[5]]["numericUpDown1"] = numericUpDown;
 
-            selectControls[6] = new List<Control>();
             numericUpDown = new NumericUpDown();
             numericUpDown.Visible = false;
             this.tabPage2.Controls.Add(numericUpDown);
             numericUpDown.DecimalPlaces = 2;
-            numericUpDown.Location = new System.Drawing.Point(40, 84);
+            numericUpDown.Location = new System.Drawing.Point(20, 94);
             numericUpDown.Maximum = new decimal(new int[] { 410065408, 2, 0, 0 });
-            selectControls[6].Add(numericUpDown);
-
+            selectControls[queryNames[5]]["numericUpDown2"] = numericUpDown;
             label = new Label();
             label.Visible = false;
             this.tabPage2.Controls.Add(label);
-            label.Location = new System.Drawing.Point(50, 44);
+            label.Location = new System.Drawing.Point(20, 44);
             label.AutoSize = true;
             label.Text = "Ввод интервала";
             label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            selectControls[6].Add(label);
+            selectControls[queryNames[5]]["labal1"] = label;
 
             //7 комбобокс с издатель
-            selectControls[7] = new List<Control>();
+            selectControls[queryNames[6]] = new Dictionary<string, Control>();
             comboBox = new ComboBox();
             comboBox.Visible = false;
             foreach (var name in Name_PUBL.Keys)
@@ -222,48 +247,46 @@ namespace Press
             comboBox.SelectedIndex = 0;
             this.tabPage2.Controls.Add(comboBox);
             comboBox.FormattingEnabled = true;
-            comboBox.Location = new System.Drawing.Point(60, 64);
+            comboBox.Location = new System.Drawing.Point(20, 64);
             comboBox.DropDownStyle = ComboBoxStyle.DropDownList;
-            selectControls[7].Add(comboBox);
+            selectControls[queryNames[6]]["comboBox1"] = comboBox;
 
             label = new Label();
             label.Visible = false;
             this.tabPage2.Controls.Add(label);
-            label.Location = new System.Drawing.Point(60, 44);
+            label.Location = new System.Drawing.Point(20, 44);
             label.AutoSize = true;
             label.Text = "Выбор издателя";
             label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            selectControls[7].Add(label);
+            selectControls[queryNames[6]]["labal1"] = label;
 
             // 8 два нумерика для интервала стоимости + комбобокс для издательства
-            selectControls[8] = new List<Control>();
+            selectControls[queryNames[7]] = new Dictionary<string, Control>();
             numericUpDown = new NumericUpDown();
             numericUpDown.Visible = false;
             this.tabPage2.Controls.Add(numericUpDown);
             numericUpDown.DecimalPlaces = 2;
-            numericUpDown.Location = new System.Drawing.Point(60, 64);
+            numericUpDown.Location = new System.Drawing.Point(20, 64);
             numericUpDown.Maximum = new decimal(new int[] { 410065408, 2, 0, 0 });
-            selectControls[8].Add(numericUpDown);
+            selectControls[queryNames[7]]["numericUpDown1"] = numericUpDown;
 
-            selectControls[8] = new List<Control>();
             numericUpDown = new NumericUpDown();
             numericUpDown.Visible = false;
             this.tabPage2.Controls.Add(numericUpDown);
             numericUpDown.DecimalPlaces = 2;
-            numericUpDown.Location = new System.Drawing.Point(60, 84);
+            numericUpDown.Location = new System.Drawing.Point(20, 94);
             numericUpDown.Maximum = new decimal(new int[] { 410065408, 2, 0, 0 });
-            selectControls[8].Add(numericUpDown);
+            selectControls[queryNames[7]]["numericUpDown2"] = numericUpDown;
 
             label = new Label();
             label.Visible = false;
             this.tabPage2.Controls.Add(label);
-            label.Location = new System.Drawing.Point(50, 44);
+            label.Location = new System.Drawing.Point(20, 44);
             label.AutoSize = true;
             label.Text = "Ввод интервала стоимости";
             label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            selectControls[8].Add(label);
+            selectControls[queryNames[7]]["label1"] = label;
 
-            selectControls[8] = new List<Control>();
             comboBox = new ComboBox();
             comboBox.Visible = false;
             foreach (var name in Name_PUBL.Keys)
@@ -273,68 +296,69 @@ namespace Press
             comboBox.SelectedIndex = 0;
             this.tabPage2.Controls.Add(comboBox);
             comboBox.FormattingEnabled = true;
-            comboBox.Location = new System.Drawing.Point(320, 64);
+            comboBox.Location = new System.Drawing.Point(160, 64);
             comboBox.DropDownStyle = ComboBoxStyle.DropDownList;
-            selectControls[8].Add(comboBox);
+            selectControls[queryNames[7]]["comboBox1"] = comboBox;
 
             label = new Label();
             label.Visible = false;
             this.tabPage2.Controls.Add(label);
-            label.Location = new System.Drawing.Point(320, 44);
+            label.Location = new System.Drawing.Point(160, 44);
             label.AutoSize = true;
             label.Text = "Выбор издателя";
             label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            selectControls[8].Add(label);
+            selectControls[queryNames[7]]["label2"] = label;
 
-            //9 немерик для ограничения цены
-            selectControls[9] = new List<Control>();
+            //9 нумерик для ограничения цены
+            selectControls[queryNames[8]] = new Dictionary<string, Control>();
             numericUpDown = new NumericUpDown();
             numericUpDown.Visible = false;
             this.tabPage2.Controls.Add(numericUpDown);
             numericUpDown.DecimalPlaces = 2;
-            numericUpDown.Location = new System.Drawing.Point(60, 64);
+            numericUpDown.Location = new System.Drawing.Point(20, 64);
             numericUpDown.Maximum = new decimal(new int[] { 410065408, 2, 0, 0 });
-            selectControls[9].Add(numericUpDown);
+            selectControls[queryNames[8]]["numericUpDown1"] = numericUpDown;
 
             label = new Label();
             label.Visible = false;
             this.tabPage2.Controls.Add(label);
-            label.Location = new System.Drawing.Point(50, 44);
+            label.Location = new System.Drawing.Point(20, 44);
             label.AutoSize = true;
             label.Text = "Ввод ограничения цены";
             label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            selectControls[9].Add(label);
+            selectControls[queryNames[8]]["label1"] = label;
 
 
             //10 - два датапикера для интервала
-            selectControls[10] = new List<Control>();
+            selectControls[queryNames[9]] = new Dictionary<string, Control>();
             DateTimePicker dateTimePicker = new DateTimePicker();
             dateTimePicker.Visible = false;
             this.tabPage2.Controls.Add(dateTimePicker);
             dateTimePicker.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            dateTimePicker.Location = new System.Drawing.Point(40, 64);
+            dateTimePicker.Location = new System.Drawing.Point(20, 64);
             dateTimePicker.Size = new System.Drawing.Size(156, 22);
-            selectControls[10].Add(dateTimePicker);
-            selectControls[10] = new List<Control>();
+            selectControls[queryNames[9]]["dateTimePicker1"] = dateTimePicker;
+
             dateTimePicker = new DateTimePicker();
             dateTimePicker.Visible = false;
             this.tabPage2.Controls.Add(dateTimePicker);
             dateTimePicker.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            dateTimePicker.Location = new System.Drawing.Point(40, 84);
+            dateTimePicker.Location = new System.Drawing.Point(20, 94);
             dateTimePicker.Size = new System.Drawing.Size(156, 22);
-            selectControls[10].Add(dateTimePicker);
+            selectControls[queryNames[9]]["dateTimePicker2"] = dateTimePicker;
+
 
             label = new Label();
             label.Visible = false;
             this.tabPage2.Controls.Add(label);
-            label.Location = new System.Drawing.Point(40, 44);
+            label.Location = new System.Drawing.Point(20, 44);
             label.AutoSize = true;
             label.Text = "Ввод интервала";
             label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            selectControls[10].Add(label);
+            selectControls[queryNames[9]]["label1"] = label;
 
             // 11 комбобокс для издательства и нумерик для стоимости
-            selectControls[11] = new List<Control>();
+            selectControls[queryNames[10]] = new Dictionary<string, Control>();
             comboBox = new ComboBox();
             comboBox.Visible = false;
             foreach (var name in Name_PUBL.Keys)
@@ -344,40 +368,39 @@ namespace Press
             comboBox.SelectedIndex = 0;
             this.tabPage2.Controls.Add(comboBox);
             comboBox.FormattingEnabled = true;
-            comboBox.Location = new System.Drawing.Point(320, 64);
+            comboBox.Location = new System.Drawing.Point(20, 64);
             comboBox.DropDownStyle = ComboBoxStyle.DropDownList;
-            selectControls[11].Add(comboBox);
+            selectControls[queryNames[10]]["comboBox1"] = comboBox;
 
             label = new Label();
             label.Visible = false;
             this.tabPage2.Controls.Add(label);
-            label.Location = new System.Drawing.Point(320, 44);
+            label.Location = new System.Drawing.Point(20, 44);
             label.AutoSize = true;
             label.Text = "Выбор издателя";
             label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            selectControls[11].Add(label);
+            selectControls[queryNames[10]]["label1"] = label;
 
-            selectControls[11] = new List<Control>();
             numericUpDown = new NumericUpDown();
             numericUpDown.Visible = false;
             this.tabPage2.Controls.Add(numericUpDown);
             numericUpDown.DecimalPlaces = 2;
-            numericUpDown.Location = new System.Drawing.Point(60, 64);
+            numericUpDown.Location = new System.Drawing.Point(160, 64);
             numericUpDown.Maximum = new decimal(new int[] { 410065408, 2, 0, 0 });
-            selectControls[11].Add(numericUpDown);
+            selectControls[queryNames[10]]["numericUpDown1"] = numericUpDown;
 
             label = new Label();
             label.Visible = false;
             this.tabPage2.Controls.Add(label);
-            label.Location = new System.Drawing.Point(50, 64);
+            label.Location = new System.Drawing.Point(160, 44);
             label.AutoSize = true;
             label.Text = "Стоимость";
             label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            selectControls[11].Add(label);
+            selectControls[queryNames[10]]["label2"] = label;
 
             //12 комбобокс для издательства текстбокс для прессы комбобокс для страны
 
-            selectControls[12] = new List<Control>();
+            selectControls[queryNames[11]] = new Dictionary<string, Control>();
             comboBox = new ComboBox();
             comboBox.Visible = false;
             foreach (var name in Name_PUBL.Keys)
@@ -387,20 +410,19 @@ namespace Press
             comboBox.SelectedIndex = 0;
             this.tabPage2.Controls.Add(comboBox);
             comboBox.FormattingEnabled = true;
-            comboBox.Location = new System.Drawing.Point(420, 64);
+            comboBox.Location = new System.Drawing.Point(20, 64);
             comboBox.DropDownStyle = ComboBoxStyle.DropDownList;
-            selectControls[12].Add(comboBox);
+            selectControls[queryNames[11]]["comboBox1"] = comboBox;
 
             label = new Label();
             label.Visible = false;
             this.tabPage2.Controls.Add(label);
-            label.Location = new System.Drawing.Point(420, 44);
+            label.Location = new System.Drawing.Point(20, 44);
             label.AutoSize = true;
             label.Text = "Выбор издателя";
             label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            selectControls[12].Add(label);
+            selectControls[queryNames[11]]["label1"] = label;
             //comboBox country
-            selectControls[12] = new List<Control>();
             comboBox = new ComboBox();
             comboBox.Visible = false;
             foreach (var name in Country.Keys)
@@ -410,59 +432,56 @@ namespace Press
             comboBox.SelectedIndex = 0;
             this.tabPage2.Controls.Add(comboBox);
             comboBox.FormattingEnabled = true;
-            comboBox.Location = new System.Drawing.Point(220, 64);
+            comboBox.Location = new System.Drawing.Point(160, 64);
             comboBox.DropDownStyle = ComboBoxStyle.DropDownList;
-            selectControls[12].Add(comboBox);
+            selectControls[queryNames[11]]["comboBox2"] = comboBox;
 
             label = new Label();
             label.Visible = false;
             this.tabPage2.Controls.Add(label);
-            label.Location = new System.Drawing.Point(220, 44);
+            label.Location = new System.Drawing.Point(160, 44);
             label.AutoSize = true;
             label.Text = "Выбор страны";
             label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            selectControls[12].Add(label);
+            selectControls[queryNames[11]]["label2"] = label;
             //textbox для ввода прессы
-            selectControls[12] = new List<Control>();
             TextBox textBox = new TextBox();
             this.tabPage2.Controls.Add(textBox);
             textBox.Visible = false;
-            textBox.Location = new System.Drawing.Point(600, 64);
+            textBox.Location = new System.Drawing.Point(300, 64);
             textBox.Multiline = true;
             textBox.Size = new System.Drawing.Size(150, 20);
-            selectControls[12].Add(textBox);
+            selectControls[queryNames[11]]["textBox1"] = textBox;
 
             label = new Label();
             label.Visible = false;
             this.tabPage2.Controls.Add(label);
-            label.Location = new System.Drawing.Point(620, 44);
+            label.Location = new System.Drawing.Point(300, 44);
             label.AutoSize = true;
             label.Text = "Выбор прессы";
             label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            selectControls[12].Add(label);
+            selectControls[queryNames[11]]["label3"] = label;
 
             // 13 нумерик для стоимости комбобокс для издательства
-            selectControls[13] = new List<Control>();
+            selectControls[queryNames[12]] = new Dictionary<string, Control>();
             numericUpDown = new NumericUpDown();
             numericUpDown.Visible = false;
             this.tabPage2.Controls.Add(numericUpDown);
             numericUpDown.DecimalPlaces = 2;
-            numericUpDown.Location = new System.Drawing.Point(60, 64);
+            numericUpDown.Location = new System.Drawing.Point(20, 64);
             numericUpDown.Maximum = new decimal(new int[] { 410065408, 2, 0, 0 });
-            selectControls[13].Add(numericUpDown);
+            selectControls[queryNames[12]]["numericUpDown1"] = numericUpDown;
 
             label = new Label();
             label.Visible = false;
             this.tabPage2.Controls.Add(label);
-            label.Location = new System.Drawing.Point(50, 64);
+            label.Location = new System.Drawing.Point(20, 44);
             label.AutoSize = true;
             label.Text = "Стоимость";
             label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            selectControls[13].Add(label);
+            selectControls[queryNames[12]]["label1"] = label;
 
 
-
-            selectControls[13] = new List<Control>();
             comboBox = new ComboBox();
             comboBox.Visible = false;
             foreach (var name in Name_PUBL.Keys)
@@ -472,49 +491,50 @@ namespace Press
             comboBox.SelectedIndex = 0;
             this.tabPage2.Controls.Add(comboBox);
             comboBox.FormattingEnabled = true;
-            comboBox.Location = new System.Drawing.Point(220, 64);
+            comboBox.Location = new System.Drawing.Point(160, 64);
             comboBox.DropDownStyle = ComboBoxStyle.DropDownList;
-            selectControls[13].Add(comboBox);
+            selectControls[queryNames[12]]["comboBox1"] = comboBox;
             label = new Label();
             label.Visible = false;
             this.tabPage2.Controls.Add(label);
-            label.Location = new System.Drawing.Point(420, 44);
+            label.Location = new System.Drawing.Point(160, 44);
             label.AutoSize = true;
             label.Text = "Выбор издателя";
             label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            selectControls[13].Add(label);
+            selectControls[queryNames[12]]["label2"] = label;
 
 
             //14 - два датапикера для интервала
-            selectControls[14] = new List<Control>();
+            selectControls[queryNames[13]] = new Dictionary<string, Control>();
             dateTimePicker = new DateTimePicker();
             dateTimePicker.Visible = false;
             this.tabPage2.Controls.Add(dateTimePicker);
             dateTimePicker.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            dateTimePicker.Location = new System.Drawing.Point(40, 64);
+            dateTimePicker.Location = new System.Drawing.Point(20, 64);
             dateTimePicker.Size = new System.Drawing.Size(156, 22);
-            selectControls[14].Add(dateTimePicker);
-            selectControls[14] = new List<Control>();
+            selectControls[queryNames[13]]["dateTimePicker1"] = dateTimePicker;
+
             dateTimePicker = new DateTimePicker();
             dateTimePicker.Visible = false;
             this.tabPage2.Controls.Add(dateTimePicker);
             dateTimePicker.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            dateTimePicker.Location = new System.Drawing.Point(40, 84);
+            dateTimePicker.Location = new System.Drawing.Point(20, 94);
             dateTimePicker.Size = new System.Drawing.Size(156, 22);
-            selectControls[14].Add(dateTimePicker);
+            selectControls[queryNames[13]]["dateTimePicker2"] = dateTimePicker;
+
 
             label = new Label();
             label.Visible = false;
             this.tabPage2.Controls.Add(label);
-            label.Location = new System.Drawing.Point(40, 44);
+            label.Location = new System.Drawing.Point(20, 44);
             label.AutoSize = true;
             label.Text = "Ввод интервала";
             label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            selectControls[14].Add(label);
+            selectControls[queryNames[13]]["label1"] = label;
 
 
             // 15 комбобокс для издательства
-            selectControls[15] = new List<Control>();
+            selectControls[queryNames[14]] = new Dictionary<string, Control>();
             comboBox = new ComboBox();
             comboBox.Visible = false;
             foreach (var name in Name_PUBL.Keys)
@@ -524,39 +544,38 @@ namespace Press
             comboBox.SelectedIndex = 0;
             this.tabPage2.Controls.Add(comboBox);
             comboBox.FormattingEnabled = true;
-            comboBox.Location = new System.Drawing.Point(40, 64);
+            comboBox.Location = new System.Drawing.Point(20, 64);
             comboBox.DropDownStyle = ComboBoxStyle.DropDownList;
-            selectControls[15].Add(comboBox);
+            selectControls[queryNames[14]]["comboBox1"] = comboBox;
 
             label.Visible = false;
             this.tabPage2.Controls.Add(label);
-            label.Location = new System.Drawing.Point(40, 44);
+            label.Location = new System.Drawing.Point(20, 44);
             label.AutoSize = true;
             label.Text = "Издательство";
             label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            selectControls[15].Add(label);
+            selectControls[queryNames[14]]["label1"] = label;
 
 
             //16 нумерик цена комбобокс издательство
-            selectControls[16] = new List<Control>();
+            selectControls[queryNames[15]] = new Dictionary<string, Control>();
             numericUpDown = new NumericUpDown();
             numericUpDown.Visible = false;
             this.tabPage2.Controls.Add(numericUpDown);
             numericUpDown.DecimalPlaces = 2;
-            numericUpDown.Location = new System.Drawing.Point(60, 64);
+            numericUpDown.Location = new System.Drawing.Point(20, 64);
             numericUpDown.Maximum = new decimal(new int[] { 410065408, 2, 0, 0 });
-            selectControls[16].Add(numericUpDown);
+            selectControls[queryNames[15]]["numericUpDown1"] = numericUpDown;
 
             label = new Label();
             label.Visible = false;
             this.tabPage2.Controls.Add(label);
-            label.Location = new System.Drawing.Point(50, 64);
+            label.Location = new System.Drawing.Point(20, 44);
             label.AutoSize = true;
             label.Text = "Стоимость";
             label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            selectControls[16].Add(label);
+            selectControls[queryNames[15]]["label1"] = label;
 
-            selectControls[16] = new List<Control>();
             comboBox = new ComboBox();
             comboBox.Visible = false;
             foreach (var name in Name_PUBL.Keys)
@@ -566,18 +585,203 @@ namespace Press
             comboBox.SelectedIndex = 0;
             this.tabPage2.Controls.Add(comboBox);
             comboBox.FormattingEnabled = true;
-            comboBox.Location = new System.Drawing.Point(40, 64);
+            comboBox.Location = new System.Drawing.Point(160, 64);
             comboBox.DropDownStyle = ComboBoxStyle.DropDownList;
-            selectControls[16].Add(comboBox);
+            selectControls[queryNames[15]]["comboBox1"] = comboBox;
 
+            label = new Label();
             label.Visible = false;
             this.tabPage2.Controls.Add(label);
-            label.Location = new System.Drawing.Point(40, 44);
+            label.Location = new System.Drawing.Point(160, 44);
             label.AutoSize = true;
             label.Text = "Издательство";
             label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            selectControls[16].Add(label);
-            #endregion
+            selectControls[queryNames[15]]["label2"] = label;
+
+        }
+
+        private void QueryCase()
+        {
+            DataSet dataSet = new DataSet();
+            var item = queryNames.Count;
+            for (int i = 0; i < item; i++)
+            {
+                if (i == 0)//по имени
+                {
+                    adapter = new SqlDataAdapter($" select  [Name] as'Название',Circulation as 'Тираж',Price as 'Цена',Date_of_Sale as'Дата продажи',Demand as'Спрос',Name_PUBL as'Издательство',Name_CNTR as 'Страна' " +
+                        $" from Products" +
+                        $" inner join Publishing on Publishing.ID = Products.Publishing_FK" +
+                        $" inner join Type on Type.ID = Products.Type_FK" +
+                        $" inner join Country on Country.Id = Products.Country_FKwhere Type.Name_TP = 'Книга'" +
+                        $" order by Name; ", connection);
+
+                }
+                if (i == 1)//по тиражу
+                {
+                    adapter = new SqlDataAdapter($"select  [Name] as'Название',Circulation as 'Тираж',Price as 'Цена',Date_of_Sale as'Дата продажи',Demand as'Спрос',Name_PUBL as'Издательство',Name_CNTR as 'Страна' " +
+                        " from Products" +
+                        "inner join Publishing on Publishing.ID = Products.Publishing_FK" +
+                        "inner join Type on Type.ID = Products.Type_FK" +
+                        "inner join Country on Country.Id = Products.Country_FK" +
+                        "where Type.Name_TP = 'Книга'" +
+                        "order by Circulation;", connection);
+                }
+                if (i == 2)//по стоимости
+                {
+                    adapter = new SqlDataAdapter($"select  [Name] as'Название',Circulation as 'Тираж',Price as 'Цена',Date_of_Sale as'Дата продажи',Demand as'Спрос',Name_PUBL as'Издательство',Name_CNTR as 'Страна'" +
+                        $"  from Products" +
+                        $"inner join Publishing on Publishing.ID = Products.Publishing_FK" +
+                        $"inner join Type on Type.ID = Products.Type_FK" +
+                        $"inner join Country on Country.Id = Products.Country_FK" +
+                        $"where Type.Name_TP = 'Книга'" +
+                        $"order by Price ;", connection);
+                }
+                if (i == 3)//Вывести самое дорогое.  для каждого вида прессы
+                {
+                    adapter = new SqlDataAdapter($"select  [Name] as'Название',Circulation as 'Тираж',Price as 'Цена',Date_of_Sale as'Дата продажи',Demand as'Спрос',Name_PUBL as'Издательство',Name_CNTR as 'Страна'" +
+                        $"  from Products" +
+                        $"inner join Publishing on Publishing.ID = Products.Publishing_FK" +
+                        $"inner join Type on Type.ID = Products.Type_FK" +
+                        $"inner join Country on Country.Id = Products.Country_FK" +
+                        $"and Price = (select max (Price)" +
+                        $"from Products);", connection);
+                    //Самое дешевое
+                    adapter = new SqlDataAdapter($"select  [Name] as'Название',Circulation as 'Тираж',Price as 'Цена',Date_of_Sale as'Дата продажи',Demand as'Спрос',Name_PUBL as'Издательство',Name_CNTR as 'Страна'" +
+                        $"  from Products" +
+                        $"inner join Publishing on Publishing.ID = Products.Publishing_FK" +
+                        $"inner join Type on Type.ID = Products.Type_FK" +
+                        $"inner join Country on Country.Id = Products.Country_FK" +
+                        $"and Price = (select min (Price)" +
+                        $"from Products);", connection);
+                    //срендняя стоимость  для каждого вида прессы (Журнал)
+                    adapter = new SqlDataAdapter($"select AVG (Price) AS [Средняя цена Журналов]" +
+                        $"from Products,Type" +
+                        $"where Type_FK= Type.Id" +
+                        $"and Name_TP = 'Журнал';", connection);
+                    // Средняя стоимость  Книг
+                    adapter = new SqlDataAdapter($"select AVG (Price) AS [Средняя цена Книг]" +
+                        $"from Products,Type" +
+                        $"where Type_FK= Type.Id" +
+                        $"and Name_TP = 'Книга';", connection);
+                    //Средняя стоимость Газет
+                    adapter = new SqlDataAdapter($"select AVG (Price) AS [Средняя цена Газет]" +
+                        $"from Products,Type" +
+                        $"where Type_FK = Type.Id" +
+                        $"and Name_TP = 'Газета';", connection);
+                    //Средняя стоимость Словарей
+                    adapter = new SqlDataAdapter($"select AVG (Price) AS [Средняя цена Словарей]" +
+                        $"from Products,Type " +
+                        $"where Type_FK = Type.Id" +
+                        $"and Name_TP = 'Словарь';", connection);
+                    //Средняя стоимость Буклетов
+                    adapter = new SqlDataAdapter($"-select AVG (Price) AS [Средняя цена Буклетов]" +
+                        $"from Products,Type " +
+                        $"where Type_FK = Type.Id" +
+                        $"and Name_TP = 'Буклет';", connection);
+                    //Средняя стоимость
+                    adapter = new SqlDataAdapter($"select AVG (Price) AS [Средняя цена ]" +
+                        $"from Products;", connection);
+                }
+                if (i == 4)//Вывести прессу с ценой выше заданной   
+                {
+                    adapter = new SqlDataAdapter($"select [Name],Circulation,Price, [Date_of_Sale], Demand,Name_TP" +
+                        " from Products,Type" +
+                        " where Type_FK = Type.Id " +
+                        $"and Price>{Price_NumericUpDown.Value};", connection); ;
+                }
+                if (i == 5)//Вывести все издания, чей тираж находится в заданных пределах
+                {
+                    adapter = new SqlDataAdapter("select  [Name],Circulation,Price, Date_of_Sale, Demand,Name_TP" +
+                        " from Products,Type" +
+                        "where Type_FK = Type.Id " +
+                        $"and Circulation >{Circulation_NumericUpDown.Value} " +
+                        $"and Circulation <{Circulation_NumericUpDown.Value};", connection);
+
+                }
+                if (i == 6)//Вывести все виды газетной продукции для заданного издательства
+                {
+                    adapter = new SqlDataAdapter($"select  [Name],Name_PUBL, Circulation,Price, Date_of_Sale, Demand,Name_TP" +
+                        "from Products" +
+                        "inner join Publishing on Products.Publishing_FK = Publishing.Id" +
+                        "inner join Type on Products.Type_FK = Type.Id" +
+                        $" and Name_TP ='{Type_Press_ComboBox.SelectedItem}' and Name_PUBL = '{Name_PUBL_ComboBox.SelectedItem}';", connection);
+                }
+                if (i == 7)//Вывести все издания, чья стоимость находится в заданных пределах
+                {
+                    adapter = new SqlDataAdapter(";", connection);
+                }
+                if (i == 8)//Вывести долю прессы от общего числа изданий
+                {
+                    adapter = new SqlDataAdapter(";", connection);
+                }
+                if (i == 9)//Вывести долю прессы проданной за определённый период
+                {
+                    // adapter = new SqlDataAdapter("select Count(t1.Id) / Count(t2.Id) as [Доля] " +
+                    //    $"from (select * from Products where Date_of_Sale>='{dateTimePicker.Data}' and Date_of_Sale<='{dateTimePicker.Data}') t1," +
+                    //    $" (select* from Products) t2;", connection);
+                }
+                if (i == 10)//Вывести все виды прессы со стоимостью больше заданной
+                {
+                    adapter = new SqlDataAdapter($"select  [Name],Circulation,Price, Date_of_Sale, Demand,Name_TP,Name_PUBL" +
+                        $"from Products" +
+                        $"inner join Type on Type_FK = TYPE.Id" +
+                        $"inner join Publishing on Publishing_FK = Publishing.Id" +
+                        $"and Price > {Price_NumericUpDown.Value}" +
+                        $"and Publishing.Name_PUBL='{Name_PUBL_ComboBox.SelectedItem}',", connection);
+                }
+                if (i == 11)//Вывести всю прессу, чья стоимость выше средней стоимости по стране
+                {
+                    adapter = new SqlDataAdapter($"select  [Name],Circulation,Price, Date_of_Sale, Demand,Name_TP,Name_PUBL" +
+                        $"from Products" +
+                        $"inner join Type on Type_FK = TYPE.Id" +
+                        $"inner join Publishing on Publishing_FK = Publishing.Id," +
+                        $"(select avg(Price)as avg_price from Products" +
+                        $"inner join Publishing on Publishing_FK = Publishing.Id" +
+                        $"where Name_PUBL = '{Name_PUBL_ComboBox.SelectedItem}') t1 " +
+                        $"where Price > t1.avg_price;;", connection);
+                }
+                if (i == 12)//Вывести долю дешевой прессы, поступившей от заданного издательства"
+                {
+                    adapter = new SqlDataAdapter($";", connection);
+                }
+                if (i == 13)//Вывести среднюю стоимость прессы, проданной за определённый промежуток времени
+                {
+                    //adapter = new SqlDataAdapter($"select avg(Price)as [средняя стоимость]" +
+                    //    $"from Products" +
+                    // $"where Date_of_Sale BETWEEN ('{dateTimePicker1.Data}') AND ('{dateTimePicker2.Data}');", connection);
+                }
+                if (i == 14)//Вывести всю прессу, чья стоимость выше средней стоимости прессы заданного издательства
+                {
+                    adapter = new SqlDataAdapter($"select  [Name],Circulation,Price, Date_of_Sale, Demand,Name_TP,Name_PUBL" +
+                        $"from Products" +
+                        $"inner join Type on Type_FK = TYPE.Id" +
+                        $"inner join Publishing on Publishing_FK = Publishing.Id," +
+                        $"(select avg(Price)as avg_price from Products" +
+                        $"inner join Publishing on Publishing_FK = Publishing.Id" +
+                        $"where Name_PUBL = '{Name_PUBL_ComboBox.SelectedItem}') t1 " +
+                        $"where Price > t1.avg_price;", connection);
+                }
+                if (i == 15)//Вывести прессу которую чаще всего покупают
+                {
+                    adapter = new SqlDataAdapter($"select  [Name] as'Название',Circulation as 'Тираж',Price as 'Цена',Date_of_Sale as'Дата продажи'," +
+                        $"Demand as'Спрос',Name_PUBL as'Издательство',Name_CNTR as 'Страна'" +
+                        $"from Products" +
+                        $"inner join Type on Type_FK = TYPE.Id" +
+                        $"inner join Publishing on Publishing_FK = Publishing.Id" +
+                        $"inner join Country on Country_FK = Country.Id" +
+                        $"where Demand =  (select Max(Demand ) from Products" +
+                        $"inner join Publishing on Publishing_FK = Publishing.Id" +
+                        $"where Price >90 and Name_PUBL = '{Name_PUBL_ComboBox.SelectedItem}' );", connection);
+                }
+            }
+            SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
+            adapter.Fill(dataSet);
+            dataGridView2.DataSource = dataSet.Tables[0];
+
+
+
+
+
         }
 
         private void ShowTable()
@@ -728,8 +932,25 @@ namespace Press
 
         }
 
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            foreach (var list in selectControls.Values)
+            {
+                foreach (var item in list.Values)
+                {
+                    item.Visible = false;
+                }
+            }
 
+            foreach (var item in selectControls[comboBox1.SelectedItem.ToString()].Values)
+            {
+                item.Visible = true;
+            }
+        }
 
-
+        private void Print_Select_Button_Click(object sender, EventArgs e)
+        {
+            QueryCase();
+        }
     }
 }
