@@ -320,9 +320,9 @@
             // dataGridView2
             // 
             this.dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView2.Location = new System.Drawing.Point(6, 87);
+            this.dataGridView2.Location = new System.Drawing.Point(6, 156);
             this.dataGridView2.Name = "dataGridView2";
-            this.dataGridView2.Size = new System.Drawing.Size(943, 411);
+            this.dataGridView2.Size = new System.Drawing.Size(943, 345);
             this.dataGridView2.TabIndex = 2;
             // 
             // comboBox1

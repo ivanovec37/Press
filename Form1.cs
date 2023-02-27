@@ -36,20 +36,20 @@ namespace Press
             Name_PUBL_ComboBox.SelectedIndex = 0;
             Type_Press_ComboBox.SelectedIndex = 0;
             Country_ComboBox.SelectedIndex = 0;
-
             dataGridView1.DataError += (object sender, DataGridViewDataErrorEventArgs anError) =>
             {
                 MessageBox.Show("Некорректный формат данных!");
                 ShowTable();
             };
             ShowTable();
+
         }
         private void FillQueryNames()
         {
             queryNames.Add("Вывести список прессы отсортированный по наименованию");//Готово 0
             queryNames.Add("Вывести список прессы отсортированный по тиражу");//готово 1
             queryNames.Add("Вывести список прессы отсортированный по стоимости");//готово 2
-            queryNames.Add("Вывести самое дорогое, дешевое, срендняя стоимость для каждого вида прессы");//готово 3
+            queryNames.Add("Вывести самое дорогое, дешевое, средняя стоимость для каждого вида прессы");//готово 3
             queryNames.Add("Вывести прессу с ценой выше заданной");//готово 4
             queryNames.Add("Вывести все издания, чей тираж находится в заданных пределах");//готово 5
             queryNames.Add("Вывести все виды газетной продукции для заданного издательства");//готово 6 
@@ -123,7 +123,7 @@ namespace Press
                2 комбобокс - тип прессы ГОТОВО
                3 комбобокс - тип прессы ГОТОВО
                4 комбобокс - тип прессы ГОТОВО
-               5 нумерик - цена комбобоксc с издательством
+               5 нумерик - цена комбобокс с издательством
                6  два нумерика для ввода интервала тиража
                7 комбобокс с издатель
                8 два нумерика для интервала стоимости + комбобокс для издательства
@@ -209,7 +209,7 @@ namespace Press
             label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             selectControls[queryNames[4]]["labal2"] = label;
 
-            //6 два нумерика для ввода интервала тиража
+            //6 два нумерика для ввода интервала тиража ГОТОВО
 
             selectControls[queryNames[5]] = new Dictionary<string, Control>();
             numericUpDown = new NumericUpDown();
@@ -445,6 +445,7 @@ namespace Press
             label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             selectControls[queryNames[11]]["label2"] = label;
             //textbox для ввода прессы
+
             TextBox textBox = new TextBox();
             this.tabPage2.Controls.Add(textBox);
             textBox.Visible = false;
@@ -600,183 +601,250 @@ namespace Press
 
         }
 
-        private void QueryCase()
+        private void QueryCase(string query)
         {
             DataSet dataSet = new DataSet();
-            var item = queryNames.Count;
-            for (int i = 0; i < item; i++)
+
+
+
+            if (query == queryNames[0])
             {
-                if (i == 0)//по имени
-                {
-                    adapter = new SqlDataAdapter($" select  [Name] as'Название',Circulation as 'Тираж',Price as 'Цена',Date_of_Sale as'Дата продажи',Demand as'Спрос',Name_PUBL as'Издательство',Name_CNTR as 'Страна' " +
-                        $" from Products" +
-                        $" inner join Publishing on Publishing.ID = Products.Publishing_FK" +
-                        $" inner join Type on Type.ID = Products.Type_FK" +
-                        $" inner join Country on Country.Id = Products.Country_FKwhere Type.Name_TP = 'Книга'" +
-                        $" order by Name; ", connection);
+                var parameter = ((ComboBox)selectControls[query]["comboBox1"]).SelectedItem.ToString();
 
-                }
-                if (i == 1)//по тиражу
-                {
-                    adapter = new SqlDataAdapter($"select  [Name] as'Название',Circulation as 'Тираж',Price as 'Цена',Date_of_Sale as'Дата продажи',Demand as'Спрос',Name_PUBL as'Издательство',Name_CNTR as 'Страна' " +
-                        " from Products" +
-                        "inner join Publishing on Publishing.ID = Products.Publishing_FK" +
-                        "inner join Type on Type.ID = Products.Type_FK" +
-                        "inner join Country on Country.Id = Products.Country_FK" +
-                        "where Type.Name_TP = 'Книга'" +
-                        "order by Circulation;", connection);
-                }
-                if (i == 2)//по стоимости
-                {
-                    adapter = new SqlDataAdapter($"select  [Name] as'Название',Circulation as 'Тираж',Price as 'Цена',Date_of_Sale as'Дата продажи',Demand as'Спрос',Name_PUBL as'Издательство',Name_CNTR as 'Страна'" +
-                        $"  from Products" +
-                        $"inner join Publishing on Publishing.ID = Products.Publishing_FK" +
-                        $"inner join Type on Type.ID = Products.Type_FK" +
-                        $"inner join Country on Country.Id = Products.Country_FK" +
-                        $"where Type.Name_TP = 'Книга'" +
-                        $"order by Price ;", connection);
-                }
-                if (i == 3)//Вывести самое дорогое.  для каждого вида прессы
-                {
-                    adapter = new SqlDataAdapter($"select  [Name] as'Название',Circulation as 'Тираж',Price as 'Цена',Date_of_Sale as'Дата продажи',Demand as'Спрос',Name_PUBL as'Издательство',Name_CNTR as 'Страна'" +
-                        $"  from Products" +
-                        $"inner join Publishing on Publishing.ID = Products.Publishing_FK" +
-                        $"inner join Type on Type.ID = Products.Type_FK" +
-                        $"inner join Country on Country.Id = Products.Country_FK" +
-                        $"and Price = (select max (Price)" +
-                        $"from Products);", connection);
-                    //Самое дешевое
-                    adapter = new SqlDataAdapter($"select  [Name] as'Название',Circulation as 'Тираж',Price as 'Цена',Date_of_Sale as'Дата продажи',Demand as'Спрос',Name_PUBL as'Издательство',Name_CNTR as 'Страна'" +
-                        $"  from Products" +
-                        $"inner join Publishing on Publishing.ID = Products.Publishing_FK" +
-                        $"inner join Type on Type.ID = Products.Type_FK" +
-                        $"inner join Country on Country.Id = Products.Country_FK" +
-                        $"and Price = (select min (Price)" +
-                        $"from Products);", connection);
-                    //срендняя стоимость  для каждого вида прессы (Журнал)
-                    adapter = new SqlDataAdapter($"select AVG (Price) AS [Средняя цена Журналов]" +
-                        $"from Products,Type" +
-                        $"where Type_FK= Type.Id" +
-                        $"and Name_TP = 'Журнал';", connection);
-                    // Средняя стоимость  Книг
-                    adapter = new SqlDataAdapter($"select AVG (Price) AS [Средняя цена Книг]" +
-                        $"from Products,Type" +
-                        $"where Type_FK= Type.Id" +
-                        $"and Name_TP = 'Книга';", connection);
-                    //Средняя стоимость Газет
-                    adapter = new SqlDataAdapter($"select AVG (Price) AS [Средняя цена Газет]" +
-                        $"from Products,Type" +
-                        $"where Type_FK = Type.Id" +
-                        $"and Name_TP = 'Газета';", connection);
-                    //Средняя стоимость Словарей
-                    adapter = new SqlDataAdapter($"select AVG (Price) AS [Средняя цена Словарей]" +
-                        $"from Products,Type " +
-                        $"where Type_FK = Type.Id" +
-                        $"and Name_TP = 'Словарь';", connection);
-                    //Средняя стоимость Буклетов
-                    adapter = new SqlDataAdapter($"-select AVG (Price) AS [Средняя цена Буклетов]" +
-                        $"from Products,Type " +
-                        $"where Type_FK = Type.Id" +
-                        $"and Name_TP = 'Буклет';", connection);
-                    //Средняя стоимость
-                    adapter = new SqlDataAdapter($"select AVG (Price) AS [Средняя цена ]" +
-                        $"from Products;", connection);
-                }
-                if (i == 4)//Вывести прессу с ценой выше заданной   
-                {
-                    adapter = new SqlDataAdapter($"select [Name],Circulation,Price, [Date_of_Sale], Demand,Name_TP" +
-                        " from Products,Type" +
-                        " where Type_FK = Type.Id " +
-                        $"and Price>{Price_NumericUpDown.Value};", connection); ;
-                }
-                if (i == 5)//Вывести все издания, чей тираж находится в заданных пределах
-                {
-                    adapter = new SqlDataAdapter("select  [Name],Circulation,Price, Date_of_Sale, Demand,Name_TP" +
-                        " from Products,Type" +
-                        "where Type_FK = Type.Id " +
-                        $"and Circulation >{Circulation_NumericUpDown.Value} " +
-                        $"and Circulation <{Circulation_NumericUpDown.Value};", connection);
-
-                }
-                if (i == 6)//Вывести все виды газетной продукции для заданного издательства
-                {
-                    adapter = new SqlDataAdapter($"select  [Name],Name_PUBL, Circulation,Price, Date_of_Sale, Demand,Name_TP" +
-                        "from Products" +
-                        "inner join Publishing on Products.Publishing_FK = Publishing.Id" +
-                        "inner join Type on Products.Type_FK = Type.Id" +
-                        $" and Name_TP ='{Type_Press_ComboBox.SelectedItem}' and Name_PUBL = '{Name_PUBL_ComboBox.SelectedItem}';", connection);
-                }
-                if (i == 7)//Вывести все издания, чья стоимость находится в заданных пределах
-                {
-                    adapter = new SqlDataAdapter(";", connection);
-                }
-                if (i == 8)//Вывести долю прессы от общего числа изданий
-                {
-                    adapter = new SqlDataAdapter(";", connection);
-                }
-                if (i == 9)//Вывести долю прессы проданной за определённый период
-                {
-                    // adapter = new SqlDataAdapter("select Count(t1.Id) / Count(t2.Id) as [Доля] " +
-                    //    $"from (select * from Products where Date_of_Sale>='{dateTimePicker.Data}' and Date_of_Sale<='{dateTimePicker.Data}') t1," +
-                    //    $" (select* from Products) t2;", connection);
-                }
-                if (i == 10)//Вывести все виды прессы со стоимостью больше заданной
-                {
-                    adapter = new SqlDataAdapter($"select  [Name],Circulation,Price, Date_of_Sale, Demand,Name_TP,Name_PUBL" +
-                        $"from Products" +
-                        $"inner join Type on Type_FK = TYPE.Id" +
-                        $"inner join Publishing on Publishing_FK = Publishing.Id" +
-                        $"and Price > {Price_NumericUpDown.Value}" +
-                        $"and Publishing.Name_PUBL='{Name_PUBL_ComboBox.SelectedItem}',", connection);
-                }
-                if (i == 11)//Вывести всю прессу, чья стоимость выше средней стоимости по стране
-                {
-                    adapter = new SqlDataAdapter($"select  [Name],Circulation,Price, Date_of_Sale, Demand,Name_TP,Name_PUBL" +
-                        $"from Products" +
-                        $"inner join Type on Type_FK = TYPE.Id" +
-                        $"inner join Publishing on Publishing_FK = Publishing.Id," +
-                        $"(select avg(Price)as avg_price from Products" +
-                        $"inner join Publishing on Publishing_FK = Publishing.Id" +
-                        $"where Name_PUBL = '{Name_PUBL_ComboBox.SelectedItem}') t1 " +
-                        $"where Price > t1.avg_price;;", connection);
-                }
-                if (i == 12)//Вывести долю дешевой прессы, поступившей от заданного издательства"
-                {
-                    adapter = new SqlDataAdapter($";", connection);
-                }
-                if (i == 13)//Вывести среднюю стоимость прессы, проданной за определённый промежуток времени
-                {
-                    //adapter = new SqlDataAdapter($"select avg(Price)as [средняя стоимость]" +
-                    //    $"from Products" +
-                    // $"where Date_of_Sale BETWEEN ('{dateTimePicker1.Data}') AND ('{dateTimePicker2.Data}');", connection);
-                }
-                if (i == 14)//Вывести всю прессу, чья стоимость выше средней стоимости прессы заданного издательства
-                {
-                    adapter = new SqlDataAdapter($"select  [Name],Circulation,Price, Date_of_Sale, Demand,Name_TP,Name_PUBL" +
-                        $"from Products" +
-                        $"inner join Type on Type_FK = TYPE.Id" +
-                        $"inner join Publishing on Publishing_FK = Publishing.Id," +
-                        $"(select avg(Price)as avg_price from Products" +
-                        $"inner join Publishing on Publishing_FK = Publishing.Id" +
-                        $"where Name_PUBL = '{Name_PUBL_ComboBox.SelectedItem}') t1 " +
-                        $"where Price > t1.avg_price;", connection);
-                }
-                if (i == 15)//Вывести прессу которую чаще всего покупают
-                {
-                    adapter = new SqlDataAdapter($"select  [Name] as'Название',Circulation as 'Тираж',Price as 'Цена',Date_of_Sale as'Дата продажи'," +
-                        $"Demand as'Спрос',Name_PUBL as'Издательство',Name_CNTR as 'Страна'" +
-                        $"from Products" +
-                        $"inner join Type on Type_FK = TYPE.Id" +
-                        $"inner join Publishing on Publishing_FK = Publishing.Id" +
-                        $"inner join Country on Country_FK = Country.Id" +
-                        $"where Demand =  (select Max(Demand ) from Products" +
-                        $"inner join Publishing on Publishing_FK = Publishing.Id" +
-                        $"where Price >90 and Name_PUBL = '{Name_PUBL_ComboBox.SelectedItem}' );", connection);
-                }
+                adapter = new SqlDataAdapter($" select  [Name] as'Название',Circulation as 'Тираж',(select FORMAT(Price, 'n2')) as 'Цена'," +
+                    $"Date_of_Sale as'Дата продажи',Demand as'Спрос',Name_PUBL as'Издательство',Name_CNTR as 'Страна' " +
+                    $" from Products " +
+                    $" inner join Publishing on Publishing.ID = Products.Publishing_FK " +
+                    $" inner join Type on Type.ID = Products.Type_FK " +
+                    $" inner join Country on Country.Id = Products.Country_FK " +
+                    $" where Type.Name_TP = '{parameter}' " +
+                    $" order by Name;", connection);
+                SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
+                adapter.Fill(dataSet);
+                dataGridView2.DataSource = dataSet.Tables[0];
             }
-            SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
-            adapter.Fill(dataSet);
-            dataGridView2.DataSource = dataSet.Tables[0];
+            if (query == queryNames[1])
+            {
+                var parameter = ((ComboBox)selectControls[query]["comboBox1"]).SelectedItem.ToString();
+                adapter = new SqlDataAdapter($" select  [Name] as'Название',Circulation as 'Тираж',(select FORMAT(Price, 'n2')) as 'Цена'," +
+                        $"Date_of_Sale as'Дата продажи',Demand as'Спрос',Name_PUBL as'Издательство',Name_CNTR as 'Страна' " +
+                        "from Products " +
+                        "inner join Publishing on Publishing.ID = Products.Publishing_FK " +
+                        "inner join Type on Type.ID = Products.Type_FK " +
+                        "inner join Country on Country.Id = Products.Country_FK " +
+                        $"where Type.Name_TP = '{parameter}' " +
+                        "order by Circulation desc; ", connection);
+                SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
+                adapter.Fill(dataSet);
+                dataGridView2.DataSource = dataSet.Tables[0];
+            }
+            if (query == queryNames[2])
+            {
+                var parameter = ((ComboBox)selectControls[query]["comboBox1"]).SelectedItem.ToString();
+                adapter = new SqlDataAdapter($"select  [Name] as'Название',Circulation as 'Тираж',(select FORMAT(Price, 'n2')) as 'Цена'," +
+                    $"Date_of_Sale as'Дата продажи',Demand as'Спрос',Name_PUBL as'Издательство',Name_CNTR as 'Страна'" +
+                    $"from Products " +
+                    $"inner join Publishing on Publishing.ID = Products.Publishing_FK " +
+                    $"inner join Type on Type.ID = Products.Type_FK " +
+                    $"inner join Country on Country.Id = Products.Country_FK " +
+                    $"where Type.Name_TP = '{parameter}' " +
+                    $"order by Price; ", connection);
+                SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
+                adapter.Fill(dataSet);
+                dataGridView2.DataSource = dataSet.Tables[0];
+            }
+            if (query == queryNames[3])
+            {
+                var parameter = Type_Press[((ComboBox)selectControls[query]["comboBox1"]).SelectedItem.ToString()];
+
+                adapter = new SqlDataAdapter("select t1.Name as 'Самое дорогое',t1.Pricemax as 'Цена',t2.Name as 'Самое дешевое', " +
+                    "t2.PriceMin as 'Цена',t3.PriceMean as'Средняя цена'from (select Pricemax, [Name] from Products, " +
+                    $"(select max (Price) as Pricemax from Products where Products.Type_FK = {parameter}) n1 " +
+                    $"where Products.Price = n1.Pricemax and Products.Type_FK = {parameter}) t1,(select Pricemin, [Name] from Products, " +
+                    $"(select min (Price) as Pricemin from Products where Products.Type_FK = {parameter}) n1 where Products.Price = n1.Pricemin and Products.Type_FK = {parameter}) t2, " +
+                    $"(select AVG (Price) as PriceMean from Products where Products.Type_FK = {parameter}) t3;", connection);
+
+
+                SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
+                adapter.Fill(dataSet);
+                dataGridView2.DataSource = dataSet.Tables[0];
+            }
+            if (query == queryNames[4])
+            {
+                var parameter = ((NumericUpDown)(selectControls[query]["numericUpDown1"])).Value;
+                var parameter2 = Name_PUBL[((ComboBox)selectControls[query]["comboBox1"]).SelectedItem.ToString()];
+
+                adapter = new SqlDataAdapter($"select  [Name] as 'Название',Circulation as 'Тираж',(select FORMAT(Price, 'n2')) as 'Цена', " +
+                    $" [Date_of_Sale] as 'Дата продажи', Demand as 'Спрос' " +
+                        $" from Products " +
+                        $" where Type_FK = {parameter2} " +
+                        $" and Price>'{(int)parameter}.{parameter % 1 * 100}' ;", connection);
+                SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
+                adapter.Fill(dataSet);
+                dataGridView2.DataSource = dataSet.Tables[0];
+            }
+            if (query == queryNames[5])
+            {
+                var parameter = ((NumericUpDown)(selectControls[query]["numericUpDown1"])).Value;
+                var parameter2 = ((NumericUpDown)(selectControls[query]["numericUpDown2"])).Value;
+                adapter = new SqlDataAdapter("select  [Name] as 'Название',Circulation as 'Тираж',(select FORMAT(Price, 'n2')) as 'Цена', " +
+                    " Date_of_Sale as 'Дата продажи', Demand as 'Спрос' ,Name_TP as 'Тип' " +
+                    " from Products " +
+                    "inner join Type " +
+                    "on Type_FK = Type.Id " +
+                    $"and Circulation >{(int)parameter} " +
+                    $"and Circulation <{(int)parameter2};", connection);
+                SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
+                adapter.Fill(dataSet);
+                dataGridView2.DataSource = dataSet.Tables[0];
+            }
+            if (query == queryNames[6])
+            {
+                var parameter = ((ComboBox)selectControls[query]["comboBox1"]).SelectedItem.ToString();
+                adapter = new SqlDataAdapter($"select  [Name] as 'Название',Name_PUBL as 'Издательство', Circulation as 'Тираж'," +
+                    $"(select FORMAT(Price, 'n2')), Date_of_Sale as 'Дата продажи', Demand as 'Спрос',Name_TP as 'Тип' " +
+                    "from Products " +
+                    "inner join Publishing on Products.Publishing_FK = Publishing.Id " +
+                    "inner join Type on Products.Type_FK = Type.Id " +
+                    $" and Name_TP ='Газета' and Name_PUBL = '{parameter}';", connection);
+                SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
+                adapter.Fill(dataSet);
+                dataGridView2.DataSource = dataSet.Tables[0];
+            }
+            if (query == queryNames[7])
+            {
+                var parameter1 = Name_PUBL[((ComboBox)selectControls[query]["comboBox1"]).SelectedItem.ToString()];
+                var parameter2 = ((NumericUpDown)(selectControls[query]["numericUpDown1"])).Value;
+                var parameter3 = ((NumericUpDown)(selectControls[query]["numericUpDown2"])).Value;
+
+                adapter = new SqlDataAdapter("select  [Name] as 'Название',Circulation as 'Тираж',(select FORMAT( Price,'n2'))as'Цена', " +
+                    " Date_of_Sale as 'Дата продажи', Demand as 'Спрос' " +
+                    " from Products " +
+                    $" where Type_FK = {parameter1} " +
+                    $" and Price > {(int)parameter2} and Price < {(int)parameter3};", connection);
+                 
+                SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
+                adapter.Fill(dataSet);
+                dataGridView2.DataSource = dataSet.Tables[0];
+            }
+            if (query == queryNames[8])
+            {
+                var parameter = ((NumericUpDown)(selectControls[query]["numericUpDown1"])).Value;
+                adapter = new SqlDataAdapter(" select t1.CNT/t2.CNT as 'Доля' " +
+                    $" from(select cast (Count(Products.Id)as float)as CNT from Products where Price < {parameter}  )t1," +
+                    "  (select cast (Count(Products.Id)as float)as CNT from Products)t2;;", connection);
+                SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
+                adapter.Fill(dataSet);
+                dataGridView2.DataSource = dataSet.Tables[0];
+            }
+            if (query == queryNames[9])
+            {
+                var parameter = ((DateTimePicker)(selectControls[query]["dateTimePicker1"])).Value.Date;
+                var parameter1 = ((DateTimePicker)(selectControls[query]["dateTimePicker2"])).Value.Date;
+                adapter = new SqlDataAdapter("select cast (Count(t1.Id)as float) / Count(t2.Id) as [Доля] " +
+                   $"from (select * from Products where Date_of_Sale>='{parameter}' and Date_of_Sale<='{parameter1}') t1," +
+                    $" (select* from Products) t2; ", connection);
+                SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
+                adapter.Fill(dataSet);
+                dataGridView2.DataSource = dataSet.Tables[0];
+            }
+            if (query == queryNames[10])
+            {
+                var parameter1 = ((ComboBox)selectControls[query]["comboBox1"]).SelectedItem.ToString();
+                var parameter = ((NumericUpDown)(selectControls[query]["numericUpDown1"])).Value;
+
+                adapter = new SqlDataAdapter($"select  [Name] as 'Название' ,Circulation as 'Тираж',(select FORMAT(Price, 'n2')), " +
+                    $" Date_of_Sale as 'Дата продажи', Demand as 'Спрос',Name_TP as 'Тип',Name_PUBL as 'Издательство' " +
+                    $"from Products " +
+                    $"inner join Type on Type_FK = TYPE.Id " +
+                    $"inner join Publishing on Publishing_FK = Publishing.Id " +
+                    $"and Price > {(int)parameter} " +
+                    $"and Publishing.Name_PUBL = '{parameter1}';", connection);
+                SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
+                adapter.Fill(dataSet);
+                dataGridView2.DataSource = dataSet.Tables[0];
+            }
+            if (query == queryNames[11])
+            {
+                var parameter = ((ComboBox)selectControls[query]["comboBox1"]).SelectedItem.ToString();
+                var parameter2 = Country[((ComboBox)selectControls[query]["comboBox2"]).SelectedItem.ToString()];
+                var parameter3 = ((TextBox)selectControls[query]["textBox1"]).Text.ToString();
+
+                adapter = new SqlDataAdapter($"select [Name] as 'Название' ,Circulation as 'Тираж',(select FORMAT(Price, 'n2')) as 'Цена', " +
+                    $"Date_of_Sale as 'Дата продажи',Demand as 'Спрос',Name_TP as 'Тип',Name_PUBL as 'Издательство' " +
+                    $"from Products " +
+                    $" inner join Type on Type_FK = TYPE.Id " +
+                    $" inner join Publishing on Publishing_FK = Publishing.Id, " +
+                    $" (select avg(Price)as avg_price from Products " +
+                    $" inner join Country on Country_FK = Country.Id " +
+                    $" where Country.Name_CNTR = '{parameter2}' and Products.Name = '{parameter3}') t1 " +
+                    $" where Price > t1.avg_price and Name_PUBL = '{parameter}';", connection);
+                SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
+                adapter.Fill(dataSet);
+                dataGridView2.DataSource = dataSet.Tables[0];
+            }
+            if (query == queryNames[12])
+            {
+                var parameter1 = Name_PUBL[((ComboBox)selectControls[query]["comboBox1"]).SelectedItem.ToString()];
+                var parameter2 = ((NumericUpDown)(selectControls[query]["numericUpDown1"])).Value;
+
+                adapter = new SqlDataAdapter($"select t1.CNT/t2.CNT as 'Доля' " +
+                    $"from(select cast (Count(Products.Id)as float)as CNT from Products, " +
+                    $"Publishing where Price < {(float)parameter2} and Name_PUBL = '{parameter1}' )t1, " +
+                    $"(select cast (Count(Products.Id)as float)as CNT from Products)t2;", connection);
+                SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
+                adapter.Fill(dataSet);
+                dataGridView2.DataSource = dataSet.Tables[0];
+            }
+            if (query == queryNames[13])
+            {
+                var parameter = ((DateTimePicker)(selectControls[query]["dateTimePicker1"])).Value.Date;
+                var parameter1 = ((DateTimePicker)(selectControls[query]["dateTimePicker2"])).Value.Date;
+                adapter = new SqlDataAdapter($"select avg(Price)as [средняя стоимость] " +
+                    $"from Products " +
+                 $"where Date_of_Sale BETWEEN '{parameter}' AND '{parameter1}'; ", connection);
+                SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
+                adapter.Fill(dataSet);
+                dataGridView2.DataSource = dataSet.Tables[0];
+            }
+            if (query == queryNames[14])
+            {
+                var parameter1 = ((ComboBox)selectControls[query]["comboBox1"]).SelectedItem.ToString();
+               
+                adapter = new SqlDataAdapter($"select [Name] as 'Название' ,Circulation as 'Тираж',(select FORMAT(Price, 'n2')) as 'Цена', " +
+                    $" Demand as 'Спрос',Name_TP as 'Тип',Name_PUBL as 'Издательство' " +
+                    $" from Products " +
+                    $" inner join Type on Type_FK = TYPE.Id " +
+                    $" inner join Publishing on Publishing_FK = Publishing.Id, " +
+                    $" (select avg(Price)as avg_price from Products " +
+                    $" inner join Publishing on Publishing_FK = Publishing.Id " +
+                    $" where Name_PUBL = '{parameter1}') t1 " +
+                    $" where Price > t1.avg_price; ", connection);
+                SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
+                adapter.Fill(dataSet);
+                dataGridView2.DataSource = dataSet.Tables[0];
+            }
+            if (query == queryNames[15])
+            {
+                var parameter1 = ((ComboBox)selectControls[query]["comboBox1"]).SelectedItem.ToString();
+                var parameter2 = ((NumericUpDown)(selectControls[query]["numericUpDown1"])).Value;
+
+                adapter = new SqlDataAdapter($"select  [Name] as'Название',Circulation as 'Тираж',(select FORMAT(Price, 'n2')) as 'Цена', " +
+                    $" Date_of_Sale as'Дата продажи', " +
+                    $" Demand as'Спрос',Name_PUBL as'Издательство',Name_CNTR as 'Страна' " +
+                    $" from Products " +
+                    $" inner join Type on Type_FK = TYPE.Id " +
+                    $" inner join Publishing on Publishing_FK = Publishing.Id " +
+                    $" inner join Country on Country_FK = Country.Id " +
+                    $" where Demand =  (select Max(Demand ) from Products " +
+                    $" inner join Publishing on Publishing_FK = Publishing.Id " +
+                    $" where Price > {parameter2} and Name_PUBL = '{parameter1}' ); ", connection);
+                SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
+                adapter.Fill(dataSet);
+                dataGridView2.DataSource = dataSet.Tables[0];
+            }
+
+
 
 
 
@@ -950,7 +1018,7 @@ namespace Press
 
         private void Print_Select_Button_Click(object sender, EventArgs e)
         {
-            QueryCase();
+            QueryCase(comboBox1.SelectedItem.ToString());
         }
     }
 }
