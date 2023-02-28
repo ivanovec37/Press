@@ -753,7 +753,7 @@ namespace Press
                 var parameter1 = ((ComboBox)selectControls[query]["comboBox1"]).SelectedItem.ToString();
                 var parameter = ((NumericUpDown)(selectControls[query]["numericUpDown1"])).Value;
 
-                adapter = new SqlDataAdapter($"select  [Name] as 'Название' ,Circulation as 'Тираж',(select FORMAT(Price, 'n2')), " +
+                adapter = new SqlDataAdapter($"select  [Name] as 'Название' ,Circulation as 'Тираж',(select FORMAT(Price, 'n2')) as 'Цена', " +
                     $" Date_of_Sale as 'Дата продажи', Demand as 'Спрос',Name_TP as 'Тип',Name_PUBL as 'Издательство' " +
                     $"from Products " +
                     $"inner join Type on Type_FK = TYPE.Id " +
