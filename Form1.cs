@@ -184,9 +184,10 @@ namespace Press
             label.Visible = false;
             this.tabPage2.Controls.Add(label);
             label.Location = new System.Drawing.Point(20, 44);
+            label.AutoSize = true;
             label.Text = "Цена";
             label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            selectControls[queryNames[4]]["labal1"] = label;
+            selectControls[queryNames[4]]["label1"] = label;
 
             comboBox = new ComboBox();
             comboBox.Visible = false;
@@ -201,13 +202,14 @@ namespace Press
             comboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             selectControls[queryNames[4]]["comboBox1"] = comboBox;
 
+            label = new Label();
             label.Visible = false;
             this.tabPage2.Controls.Add(label);
             label.Location = new System.Drawing.Point(160, 44);
             label.AutoSize = true;
             label.Text = "Издательство";
             label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            selectControls[queryNames[4]]["labal2"] = label;
+            selectControls[queryNames[4]]["label2"] = label;
 
             //6 два нумерика для ввода интервала тиража ГОТОВО
 
@@ -283,7 +285,7 @@ namespace Press
             this.tabPage2.Controls.Add(label);
             label.Location = new System.Drawing.Point(20, 44);
             label.AutoSize = true;
-            label.Text = "Ввод интервала стоимости";
+            label.Text = "Интервал стоимости";
             label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             selectControls[queryNames[7]]["label1"] = label;
 
@@ -549,6 +551,7 @@ namespace Press
             comboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             selectControls[queryNames[14]]["comboBox1"] = comboBox;
 
+            label = new Label();
             label.Visible = false;
             this.tabPage2.Controls.Add(label);
             label.Location = new System.Drawing.Point(20, 44);
@@ -702,7 +705,7 @@ namespace Press
             {
                 var parameter = ((ComboBox)selectControls[query]["comboBox1"]).SelectedItem.ToString();
                 adapter = new SqlDataAdapter($"select  [Name] as 'Название',Name_PUBL as 'Издательство', Circulation as 'Тираж'," +
-                    $"(select FORMAT(Price, 'n2')), Date_of_Sale as 'Дата продажи', Demand as 'Спрос',Name_TP as 'Тип' " +
+                    $"(select FORMAT(Price, 'n2')) as 'Цена', Date_of_Sale as 'Дата продажи', Demand as 'Спрос',Name_TP as 'Тип' " +
                     "from Products " +
                     "inner join Publishing on Products.Publishing_FK = Publishing.Id " +
                     "inner join Type on Products.Type_FK = Type.Id " +
@@ -721,7 +724,7 @@ namespace Press
                     " Date_of_Sale as 'Дата продажи', Demand as 'Спрос' " +
                     " from Products " +
                     $" where Type_FK = {parameter1} " +
-                    $" and Price > {(int)parameter2} and Price < {(int)parameter3};", connection);
+                    $" and Price > '{(int)parameter2}.{parameter2 % 1 * 100}' and Price < '{(int)parameter3}.{parameter3 % 1 * 100}';", connection);
                  
                 SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
                 adapter.Fill(dataSet);
@@ -731,7 +734,7 @@ namespace Press
             {
                 var parameter = ((NumericUpDown)(selectControls[query]["numericUpDown1"])).Value;
                 adapter = new SqlDataAdapter(" select t1.CNT/t2.CNT as 'Доля' " +
-                    $" from(select cast (Count(Products.Id)as float)as CNT from Products where Price < {parameter}  )t1," +
+                    $" from(select cast (Count(Products.Id)as float)as CNT from Products where Price < '{(int)parameter}.{parameter % 1 * 100}' )t1," +
                     "  (select cast (Count(Products.Id)as float)as CNT from Products)t2;;", connection);
                 SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
                 adapter.Fill(dataSet);
@@ -758,7 +761,7 @@ namespace Press
                     $"from Products " +
                     $"inner join Type on Type_FK = TYPE.Id " +
                     $"inner join Publishing on Publishing_FK = Publishing.Id " +
-                    $"and Price > {(int)parameter} " +
+                    $"and Price >'{(int)parameter}.{parameter % 1 * 100}' " +
                     $"and Publishing.Name_PUBL = '{parameter1}';", connection);
                 SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
                 adapter.Fill(dataSet);
@@ -767,7 +770,7 @@ namespace Press
             if (query == queryNames[11])
             {
                 var parameter = ((ComboBox)selectControls[query]["comboBox1"]).SelectedItem.ToString();
-                var parameter2 = Country[((ComboBox)selectControls[query]["comboBox2"]).SelectedItem.ToString()];
+                var parameter2 = ((ComboBox)selectControls[query]["comboBox2"]).SelectedItem.ToString();
                 var parameter3 = ((TextBox)selectControls[query]["textBox1"]).Text.ToString();
 
                 adapter = new SqlDataAdapter($"select [Name] as 'Название' ,Circulation as 'Тираж',(select FORMAT(Price, 'n2')) as 'Цена', " +
@@ -785,12 +788,12 @@ namespace Press
             }
             if (query == queryNames[12])
             {
-                var parameter1 = Name_PUBL[((ComboBox)selectControls[query]["comboBox1"]).SelectedItem.ToString()];
+                var parameter1 = ((ComboBox)selectControls[query]["comboBox1"]).SelectedItem.ToString();
                 var parameter2 = ((NumericUpDown)(selectControls[query]["numericUpDown1"])).Value;
 
                 adapter = new SqlDataAdapter($"select t1.CNT/t2.CNT as 'Доля' " +
                     $"from(select cast (Count(Products.Id)as float)as CNT from Products, " +
-                    $"Publishing where Price < {(float)parameter2} and Name_PUBL = '{parameter1}' )t1, " +
+                    $"Publishing where Price < '{(int)parameter2}.{parameter2 % 1 * 100}' and Name_PUBL = '{parameter1}' )t1, " +
                     $"(select cast (Count(Products.Id)as float)as CNT from Products)t2;", connection);
                 SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
                 adapter.Fill(dataSet);
@@ -829,7 +832,8 @@ namespace Press
                 var parameter1 = ((ComboBox)selectControls[query]["comboBox1"]).SelectedItem.ToString();
                 var parameter2 = ((NumericUpDown)(selectControls[query]["numericUpDown1"])).Value;
 
-                adapter = new SqlDataAdapter($"select  [Name] as'Название',Circulation as 'Тираж',(select FORMAT(Price, 'n2')) as 'Цена', " +
+                adapter = new SqlDataAdapter($"select  [Name] as'Название',Circulation as 'Тираж', " +
+                    $"(select FORMAT(Price, 'n2')) as 'Цена', " +
                     $" Date_of_Sale as'Дата продажи', " +
                     $" Demand as'Спрос',Name_PUBL as'Издательство',Name_CNTR as 'Страна' " +
                     $" from Products " +
@@ -838,17 +842,12 @@ namespace Press
                     $" inner join Country on Country_FK = Country.Id " +
                     $" where Demand =  (select Max(Demand ) from Products " +
                     $" inner join Publishing on Publishing_FK = Publishing.Id " +
-                    $" where Price > {parameter2} and Name_PUBL = '{parameter1}' ); ", connection);
+                    $" where Price > '{(int)parameter2}.{parameter2 % 1 * 100}' and Name_PUBL = '{parameter1}' )" +
+                    $" and Price > '{(int)parameter2}.{parameter2 % 1 * 100}' and Name_PUBL = '{parameter1}'; ", connection);
                 SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
                 adapter.Fill(dataSet);
                 dataGridView2.DataSource = dataSet.Tables[0];
             }
-
-
-
-
-
-
 
         }
 
